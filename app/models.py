@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
-
+from django.contrib.auth.models import User
 class Tag(models.Model):
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=50)
@@ -12,6 +12,7 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+    
     
 
         
@@ -31,4 +32,12 @@ class Post(models.Model):
     def __str__(self):
         return self.title
     
-    
+
+class Comments(models.Model):
+    content = models.TextField()
+    date = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100)
+    website = models.URLField(max_length=200)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
