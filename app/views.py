@@ -4,8 +4,9 @@ from django.shortcuts import render
 from django.views.generic import ListView,DetailView
 from .models import Post,Comments
 from django.shortcuts import get_object_or_404
-from .forms import CommentForm
+from .forms import CommentForm,SubscribeForm
 from django.shortcuts import redirect
+from django.contrib import messages
 
 
 # Displaying of all posts in the blog
@@ -14,12 +15,28 @@ class PostListView(ListView):
     context_object_name = 'posts'
     template_name = 'app/all_posts.html'
     
-    # Getting Top Posts and Recent Posts into the context dictionary
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["top_posts"] = self.model.objects.all().order_by('-view_count')[:3]
-        context["recent_posts"] = self.model.objects.all().order_by('-last_update')[:3]
+        context['form'] = SubscribeForm()
+        context["top_posts"] = self.model.objects.all().order_by(
+            '-view_count')[:3]
+        context["recent_posts"] = self.model.objects.all().order_by(
+            '-last_update')[:3]
         return context
+
+    def post(self, request, *args, **kwargs):
+        form = SubscribeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Subscribed successfully!')
+        else:
+            messages.error(request, 'Subscription failed. Please try again.')
+
+        return redirect('posts')
+
+        # If form is invalid or other scenario, handle it accordingly
+        return super().post(request, *args, **kwargs)
+
 
 
 
