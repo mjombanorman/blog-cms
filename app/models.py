@@ -31,6 +31,7 @@ class Post(models.Model):
     image = models.ImageField(upload_to='post-images/',null=True,blank=True)
     tags = models.ManyToManyField(Tag,blank=True,related_name="post")
     view_count = models.IntegerField(null=True,blank=True)
+    is_featured = models.BooleanField(default=False)
    
     def save(self,*args,**kwargs):
         self.slug = slugify(self.title)

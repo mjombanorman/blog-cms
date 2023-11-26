@@ -22,6 +22,7 @@ class PostListView(ListView):
             '-view_count')[:3]
         context["recent_posts"] = self.model.objects.all().order_by(
             '-last_update')[:3]
+        context["featured_post"] = self.model.objects.filter(is_featured=True).first()
         return context
 
     def post(self, request, *args, **kwargs):
