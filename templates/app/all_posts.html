@@ -37,7 +37,7 @@
   <div class="container">
     <div class="grid-2">
       <div class="post-img">
-        <img src="images/post.png" alt="" />
+        <img src="{% static 'images/post.png' %}" alt="" />
       </div>
       <div class="post-content">
         <div class="cetagory">
@@ -64,7 +64,7 @@
   <div class="container">
     <h1 class="sec-title">Top blogs</h1>
     <div class="grid-3">
-      {% for post in posts %}
+      {% for post in top_posts %}
       <!-- card -->
       <a href="{% url "post-detail" post.slug %}">
         <div class="card">
@@ -74,13 +74,13 @@
              {% else %}
                        <img src="{% static 'images/default.jpg'%}" class="img-fluid" />
             {% endif %}
-            <div class="tag">Tag name</div>
+            <div class="tag">{% if post.tags.all|length == 0 %} Untagged {% else %} {{post.tags.all.0.name}}{% endif %}</div>
           </div>
           <div class="card-content">
             <h3>{{post.title}}</h3>
             <div class="author">
               <div class="profile-pic">
-                <img src="images/author.svg" alt="" />
+                <img src="{% static 'images/author.svg' %}" alt="" />
               </div>
               <div class="details">
                 <p>Author name</p>
@@ -106,7 +106,7 @@
   <div class="container">
     <h1 class="sec-title">New blogs</h1>
     <div class="grid-3">
-      {% for post in posts %}
+      {% for post in recent_posts %}
       <!-- card -->
       <a href="{% url "post-detail" post.slug %}">
         <div class="card">
@@ -116,16 +116,16 @@
              {% else %}
                        <img src="{% static 'images/default.jpg'%}" class="img-fluid" />
             {% endif %}
-            <div class="tag">Tag name</div>
+            <div class="tag">{% if post.tags.all|length == 0 %} Untagged {% else %} {{post.tags.all.0.name}}{% endif %}</div>
           </div>
           <div class="card-content">
             <h3>{{post.title}}</h3>
             <div class="author">
               <div class="profile-pic">
-               <img src="{% static 'images/author.svg'%}" alt="" />
+               <img src="{% static 'images/author.svg' %}" alt="" />
               </div>
               <div class="details">
-                <p>Author name</p>
+                <p>{Author name}</p>
                 <small>{{post.last_update}}</small>
               </div>
             </div>

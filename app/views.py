@@ -13,6 +13,14 @@ class PostListView(ListView):
     model = Post
     context_object_name = 'posts'
     template_name = 'app/all_posts.html'
+    
+    # Getting Top Posts and Recent Posts into the context dictionary
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["top_posts"] = self.model.objects.all().order_by('-view_count')[:3]
+        context["recent_posts"] = self.model.objects.all().order_by('-last_update')[:3]
+        return context
+
 
 
 # Displaying a single blog post
@@ -25,7 +33,11 @@ class PostDetailView(DetailView):
     def get_object(self, queryset=None):
         #allow updating of view count in returned post
         post = get_object_or_404(Post, slug=self.kwargs['slug'])
-        post.view_count += 1
+        
+        # when view_count is None initialize with 0
+        if post.view_count is None:
+            post.view_count = 0
+        post.view_count = post.view_count + 1
         post.save()
         return post
    
@@ -42,6 +54,7 @@ class PostDetailView(DetailView):
         form = CommentForm(request.POST)
 
         if form.is_valid():
+            
             # checking if the post request sent contains a reply then save to database as a reply
             if request.POST.get('parent'):
                 parent = Comments.objects.get(id=request.POST.get('parent'))
@@ -56,7 +69,6 @@ class PostDetailView(DetailView):
             comment.post = post
             comment.save()
        
-        # Redirect or do something after successful comment submission
-        # If the form is invalid or after processing, render the same page with updated context
+        # Redirect to the same page with updated context
         return redirect('post-detail', self.kwargs['slug'])
 
