@@ -31,8 +31,9 @@ class PostDetailView(DetailView):
    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Add an instance of CommentForm to the context
-        context['comments'] = Comments.objects.filter(post=self.object)
+        # Add an instance of only comments and form excluding the reply
+        context['comments'] = Comments.objects.filter(
+            post=self.object, parent=None)
         context['form'] = CommentForm()
         return context
 
@@ -41,6 +42,15 @@ class PostDetailView(DetailView):
         form = CommentForm(request.POST)
 
         if form.is_valid():
+            # checking if the post request sent contains a reply then save to database as a reply
+            if request.POST.get('parent'):
+                parent = Comments.objects.get(id=request.POST.get('parent'))
+                comment_reply = form.save(commit=False)
+                comment_reply.parent = parent
+                comment_reply.post = post
+                comment_reply.save()
+                return redirect('post-detail', self.kwargs['slug'])
+            
             # Process the form data and save the comment
             comment = form.save(commit=False)
             comment.post = post
