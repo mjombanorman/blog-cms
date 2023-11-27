@@ -55,7 +55,7 @@
                             <img src="{% static 'images/author.svg' %}" alt="" />
                           </div>
                           <div class="details">
-                            <p>{{post.author}}</p>
+                             <p>{{post.author.first_name }} {{post.author.last_name }}</p>
                             <small>{{post.last_update|date}}</small>
                           </div>
                         </div>
@@ -98,7 +98,7 @@
                             <img src="{% static 'images/author.svg' %}" alt="" />
                           </div>
                           <div class="details">
-                            <p>{{post.author}}</p>
+                            <p>{{post.author.first_name }} {{post.author.last_name }}</p>
                             <small>{{post.last_update|date}}</small>
                           </div>
                         </div>

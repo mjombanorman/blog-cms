@@ -1,5 +1,5 @@
 from django.views.generic import ListView,DetailView
-from .models import Post,Comments,Tag
+from .models import Post,Comments,Tag,Profile
 from django.shortcuts import get_object_or_404
 from .forms import CommentForm,SubscribeForm
 from django.shortcuts import redirect, render
@@ -102,6 +102,32 @@ class TagDetailView(DetailView):
         context['form'] = SubscribeForm()
         #filter top posts using tags id
         context['tags'] = self.model.objects.all()
+        context["top_posts"] = Post.objects.filter(tags__in=self.model.objects.filter(slug=self.kwargs['slug'])).order_by(
+            '-view_count')[:3]
+        context["recent_posts"] = Post.objects.filter(
+            tags__in=self.model.objects.filter(slug=self.kwargs['slug'])).order_by('-last_update')[:3]
+        return context
+
+
+class AuthorDetailView(DetailView):
+    model = Profile
+    template_name = "app/author.html"
+    context_object_name = 'author'
+
+    # get the post based on the slug
+
+    # def get_object(self, queryset=None):
+    #     # allow updating of view count in returned post
+    #     author = get_object_or_404(Profile, author=self.kwargs['slug'])
+    #     posts = get_object_or_404(Post, author=author.user)
+    #     return posts
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = SubscribeForm()
+        # filter top posts using tags id
+        context['author'] = get_object_or_404(
+            Profile, author=self.kwargs['slug'])
         context["top_posts"] = Post.objects.filter(tags__in=self.model.objects.filter(slug=self.kwargs['slug'])).order_by(
             '-view_count')[:3]
         context["recent_posts"] = Post.objects.filter(
