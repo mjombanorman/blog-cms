@@ -1,11 +1,8 @@
-from typing import Any
-from django.db import models
-from django.shortcuts import render
 from django.views.generic import ListView,DetailView
-from .models import Post,Comments
+from .models import Post,Comments,Tag
 from django.shortcuts import get_object_or_404
 from .forms import CommentForm,SubscribeForm
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.contrib import messages
 
 
@@ -32,14 +29,10 @@ class PostListView(ListView):
             messages.success(request, 'Subscribed successfully!')
         else:
             messages.error(request, 'Subscription failed. Please try again.')
-
         return redirect('posts')
 
         # If form is invalid or other scenario, handle it accordingly
         return super().post(request, *args, **kwargs)
-
-
-
 
 # Displaying a single blog post
 class PostDetailView(DetailView):
@@ -90,3 +83,27 @@ class PostDetailView(DetailView):
         # Redirect to the same page with updated context
         return redirect('post-detail', self.kwargs['slug'])
 
+
+
+class TagDetailView(DetailView):
+    model = Tag
+    template_name = "app/tag.html"
+    context_object_name = 'tag'
+    
+       # get the post based on the slug
+
+    def get_object(self, queryset=None):
+        # allow updating of view count in returned post
+        tag = get_object_or_404(Tag, slug=self.kwargs['slug'])
+        return tag
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = SubscribeForm()
+        #filter top posts using tags id
+        context['tags'] = self.model.objects.all()
+        context["top_posts"] = Post.objects.filter(tags__in=self.model.objects.filter(slug=self.kwargs['slug'])).order_by(
+            '-view_count')[:3]
+        context["recent_posts"] = Post.objects.filter(
+            tags__in=self.model.objects.filter(slug=self.kwargs['slug'])).order_by('-last_update')[:3]
+        return context
