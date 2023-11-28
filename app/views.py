@@ -4,6 +4,8 @@ from django.shortcuts import get_object_or_404
 from .forms import CommentForm,SubscribeForm
 from django.shortcuts import redirect, render
 from django.contrib import messages
+from django.contrib.auth.models import User
+from django.db.models import Count
 
 
 # Displaying of all posts in the blog
@@ -125,11 +127,11 @@ class AuthorDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = SubscribeForm()
+        author = get_object_or_404(
+            Profile, slug=self.kwargs['slug'])
         # filter top posts using tags id
-        context['author'] = get_object_or_404(
-            Profile, author=self.kwargs['slug'])
-        context["top_posts"] = Post.objects.filter(tags__in=self.model.objects.filter(slug=self.kwargs['slug'])).order_by(
-            '-view_count')[:3]
-        context["recent_posts"] = Post.objects.filter(
-            tags__in=self.model.objects.filter(slug=self.kwargs['slug'])).order_by('-last_update')[:3]
+        context['author'] = author
+        context["top_posts"] = Post.objects.filter(author=author.user).order_by('-view_count')[:2]
+        context["recent_posts"] = Post.objects.filter(author=author.user).order_by('-last_update')[:3]
+        context["top_authors"] = User.objects.annotate(number=Count('post')).order_by('-number')[:3]
         return context

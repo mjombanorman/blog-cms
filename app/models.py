@@ -18,6 +18,10 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+    @property
+    def fullname(self):
+        return self.user.first_name + " " + self.user.last_name
 class Subscribe(models.Model):
     email = models.EmailField(max_length=254)
     date = models.DateTimeField(auto_now=True)
