@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PostDetailView,PostListView,TagDetailView,AuthorDetailView,SearchView
+from .views import PostDetailView,PostListView,TagDetailView,AuthorDetailView,AboutView,SearchView
 
 
 
@@ -9,4 +9,5 @@ urlpatterns = [
     path('tag/<slug:slug>/', TagDetailView.as_view(), name="tag"),
     path('author/<slug:slug>/', AuthorDetailView.as_view(), name="author"),
     path('search/', SearchView.as_view(), name="search"),
+    path('about/', AboutView.as_view(), name="about"),
 ]

@@ -1,5 +1,5 @@
 from django.views.generic import ListView,DetailView
-from .models import Post,Comments,Tag,Profile
+from .models import Post,Comments,Tag,Profile,WebsiteMeta
 from django.shortcuts import get_object_or_404
 from .forms import CommentForm,SubscribeForm
 from django.shortcuts import redirect, render
@@ -16,6 +16,8 @@ class PostListView(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        if WebsiteMeta.objects.all().exists():
+            context['meta'] = WebsiteMeta.objects.all().first()
         context['form'] = SubscribeForm()
         context["top_posts"] = self.model.objects.all().order_by(
             '-view_count')[:3]
@@ -85,7 +87,17 @@ class PostDetailView(DetailView):
         # Redirect to the same page with updated context
         return redirect('post-detail', self.kwargs['slug'])
 
-
+class AboutView(ListView):
+    model = WebsiteMeta
+    context_object_name = 'meta'
+    template_name = 'app/about.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if WebsiteMeta.objects.all().exists():
+            context['meta'] = WebsiteMeta.objects.all().first()
+      
+        return context
 
 class TagDetailView(DetailView):
     model = Tag

@@ -76,3 +76,8 @@ class Comments(models.Model):
         title = self.content[:33]
         return title
     
+class WebsiteMeta(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.CharField(max_length=500)
+    about = models.TextField()
+  

@@ -29,13 +29,13 @@
     
     <header>
       <div class="container container-fluid">
-        <div class="logo">
+        <a href={% url "posts" %} class="logo">
           <i class="fa-brands fa-blogger"></i>
-        </div>
+        </a>
         <div class="links">
           <a href="{% url "posts" %}">Home</a>
-          <a href="{% url "posts" %}">Blog</a>
-          <a href="{% url "posts" %}">Author</a>
+          <a href="{% url "about" %}">About</a>
+          <a href="{% url "posts" %}">All Posts</a>
         </div>
         <div class="action-btn">
           <a href="pages/login.html"
