@@ -135,3 +135,20 @@ class AuthorDetailView(DetailView):
         context["recent_posts"] = Post.objects.filter(author=author.user).order_by('-last_update')[:3]
         context["top_authors"] = User.objects.annotate(number=Count('post')).order_by('-number')[:3]
         return context
+
+
+# Searchview to allow user search data in the blog
+class SearchView(ListView):
+    template_name = 'app/search.html'
+    context_object_name = 'posts'
+    model = Post
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            posts = Post.objects.filter(title__icontains=query)
+            print(posts)
+        else:
+            posts = Post.objects.none()  # Return an empty queryset if there's no query
+            print(posts)
+        return posts

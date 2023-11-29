@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} Single Post{%endblock title %} 
+{% block content %}
+      <div class="container">
+        <div class="page-top">
+          <div class="top flex">
+            <div class="page-name">
+              <a href="#" class="learn">
+                <span class="material-icons"> keyboard_return </span> Go back
+              </a>
+              <h1>Search</h1>
+            </div>
+            <form class="search-bar s-active" method="GET">
+              <input type="text" placeholder="Search" name="q"/>
+              <button type="submit" class="animated-search">
+                <i class="uil uil-search"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+        <section class="sp">
+      <div class="container">
+        <div class="grid">
+            {% if posts|length == 0 %}
+            <h2>No posts available, please search again. </h2>
+            {% else %}
+      {% for post in posts %}
+      <!-- card -->
+      <a href="{% url "post-detail" post.slug %}">
+        <div class="card">
+          <div class="post-img">
+            {% if post.image %}
+            <img src="{{post.image.url}}" alt="" />
+             {% else %}
+                       <img src="{% static 'images/default.jpg'%}" class="img-fluid" />
+            {% endif %}
+            <div class="tag">{% if post.tags.all|length == 0 %} Untagged {% else %} {{post.tags.all.0.name}}{% endif %}</div>
+          </div>
+          <div class="card-content">
+            <h3>{{post.title}}</h3>
+            <div class="author">
+              <div class="profile-pic">
+                <img src="{% static 'images/author.svg' %}" alt="" />
+              </div>
+              <div class="details">
+              <p>{{post.author.first_name }} {{post.author.last_name }}</p>
+                <small>{{post.last_update}}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
+      <!-- card end-->
+      {% endfor %}
+      {% endif %}
+
+        </div>
+      </div>
+    </section>
+
+{% endblock content %}
