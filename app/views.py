@@ -72,6 +72,15 @@ class PostDetailView(DetailView):
         context['is_bookmarked']=bookmarked
         context['is_liked'] = is_liked
         context['like_count'] = self.object.likes.all().count
+        
+        context["top_posts"] = self.model.objects.all().order_by(
+            '-view_count')[:3]
+        context["recent_posts"] = self.model.objects.all().order_by(
+            '-last_update')[:2]
+        
+        context['top_authors'] = User.objects.annotate(number=Count('post')).order_by('-number')
+        context['related_posts'] = self.model.objects.filter(author=self.object.author)[:2]
+        context['tags']=Tag.objects.all()
 
         context['comments'] = Comments.objects.filter(
             post=self.object, parent=None)
