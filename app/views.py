@@ -169,3 +169,14 @@ class RegisterUserView(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         self.object = form.save()
         return super().form_valid(form)
+
+
+def BookmarkPostView(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+    if post.bookmarks.filter(id=request.user.id).exists():
+        post.bookmarks.remove(request.user)
+        messages.info(request, 'You have removed this post from the bookmark.')
+    else:
+        post.bookmarks.add(request.user)
+        messages.info(request, 'You have bookmarked this post.')
+    return redirect('post-detail', slug)
