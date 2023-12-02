@@ -1062,3 +1062,8 @@ color: var(--red);
 .reply button {
   background: transparent;
 }
+.text-success{
+  color: darkgreen;
+  font-weight: 700;
+  font-style: italic;
+}

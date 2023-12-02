@@ -10,7 +10,7 @@
         </div>
         <div class="action-btn">
           {% if user.is_authenticated %}
-          <a href="{% url "logout" %}"><button class="btn btn-scoundary">Logout</button></a>
+         <p class="text-success"> Hello {{ user.username |capfirst }} !<p/><a href="{% url "logout" %}"><button class="btn btn-scoundary">Logout</button></a>
           {% else %}
 
            <a href="{% url "login" %}"><button class="btn btn-scoundary">Login</button></a>
