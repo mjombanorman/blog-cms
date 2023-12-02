@@ -11,6 +11,11 @@
         <div class="logo f-logo">
           <i class="fa-brands fa-blogger"></i>
         </div>
+           {% if messages %}
+           {% for message in messages %}
+          <p class="text-success">{{ message }}</p>
+        {% endfor %}
+        {% endif %}
 
         {% if form.non_field_errors %}
         {% for error in form.non_field_errors %}
@@ -43,7 +48,7 @@
           <button class="btn btn-primary rounded" type="submit">
             Login <span class="material-icons"> arrow_right_alt </span>
           </button>
-          <p>Not have an account? <a href="signup.html">Sign up</a></p>
+          <p>Not have an account? <a href="{% url "register" %}">Sign up</a></p>
         </div>
       </center>
     </form>

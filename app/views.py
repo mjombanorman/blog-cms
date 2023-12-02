@@ -1,7 +1,8 @@
-from django.views.generic import ListView,DetailView
+from django.views.generic import ListView,DetailView,CreateView
+from django.contrib.messages.views import SuccessMessageMixin
 from .models import Post,Comments,Tag,Profile,WebsiteMeta
 from django.shortcuts import get_object_or_404
-from .forms import CommentForm,SubscribeForm
+from .forms import CommentForm,SubscribeForm,RegistrationForm
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -156,3 +157,15 @@ class SearchView(ListView):
             posts = Post.objects.none()  # Return an empty queryset if there's no query
             print(posts)
         return posts
+
+
+class RegisterUserView(SuccessMessageMixin, CreateView):
+    model = User
+    template_name = 'registration/signup.html'
+    success_url = "/accounts/login/"  # Assuming 'posts' is the URL name for your posts view
+    success_message = "Your account was registered successfully"
+    form_class = RegistrationForm
+
+    def form_valid(self, form):
+        self.object = form.save()
+        return super().form_valid(form)
