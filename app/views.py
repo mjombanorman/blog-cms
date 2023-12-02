@@ -1,3 +1,5 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from django.views.generic import ListView,DetailView,CreateView
 from django.contrib.messages.views import SuccessMessageMixin
 from .models import Post,Comments,Tag,Profile,WebsiteMeta
@@ -60,6 +62,17 @@ class PostDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Add an instance of only comments and form excluding the reply
+        bookmarked = False
+        if self.object.bookmarks.filter(id=self.request.user.id).exists():
+            bookmarked = True                   
+        is_liked = False
+        if self.object.likes.filter(id=self.request.user.id).exists():
+            is_liked = True            
+            
+        context['is_bookmarked']=bookmarked
+        context['is_liked'] = is_liked
+        context['like_count'] = self.object.likes.all().count
+
         context['comments'] = Comments.objects.filter(
             post=self.object, parent=None)
         context['form'] = CommentForm()
@@ -171,7 +184,7 @@ class RegisterUserView(SuccessMessageMixin, CreateView):
         return super().form_valid(form)
 
 
-def BookmarkPostView(request, slug):
+def BookmarkPost(request, slug):
     post = get_object_or_404(Post, slug=slug)
     if post.bookmarks.filter(id=request.user.id).exists():
         post.bookmarks.remove(request.user)
@@ -180,3 +193,36 @@ def BookmarkPostView(request, slug):
         post.bookmarks.add(request.user)
         messages.info(request, 'You have bookmarked this post.')
     return redirect('post-detail', slug)
+
+
+def LikePost(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+    
+  
+    if post.likes.filter(id=request.user.id).exists():
+        post.likes.remove(request.user)
+        messages.info(request, 'You have unliked the post.')
+    else:
+        post.likes.add(request.user)
+        messages.info(request, 'You have liked this post.')
+    return redirect('post-detail', slug)
+
+
+
+class BookmarkedPostsView(ListView):
+    model = Post
+    context_object_name = 'bookmarked_posts'
+    template_name = 'app/all_bookmarked_posts.html'
+  
+    
+    def get_queryset(self) -> QuerySet[Any]:
+        return Post.objects.filter(bookmarks=self.request.user.id)
+    
+   
+class MyPostsView(ListView):
+    model = Post
+    context_object_name = 'my_posts'
+    template_name = 'app/my_posts.html'
+
+    def get_queryset(self) -> QuerySet[Any]:
+        return Post.objects.filter(author=self.request.user)

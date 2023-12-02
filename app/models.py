@@ -52,6 +52,7 @@ class Post(models.Model):
     is_featured = models.BooleanField(default=False)
     author = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
     bookmarks = models.ManyToManyField(User,blank=True,related_name="bookmarks",default=None)
+    likes = models.ManyToManyField(User,blank=True,related_name="likes",default=None)
    
     def save(self,*args,**kwargs):
         self.slug = slugify(self.title)

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PostDetailView,PostListView,TagDetailView,AuthorDetailView,AboutView,SearchView,RegisterUserView,BookmarkPostView
+from .views import PostDetailView,PostListView,TagDetailView,AuthorDetailView,AboutView,SearchView,RegisterUserView,BookmarkPost,LikePost,BookmarkedPostsView,MyPostsView
 
 
 urlpatterns = [
@@ -10,5 +10,8 @@ urlpatterns = [
     path('search/', SearchView.as_view(), name="search"),
     path('about/', AboutView.as_view(), name="about"),
     path('accounts/register/', RegisterUserView.as_view(), name="register"),
-    path('bookmark-post/<slug:slug>', BookmarkPostView, name="bookmark"),
+    path('bookmark-post/<slug:slug>', BookmarkPost, name="bookmark"),
+    path('likes-post/<slug:slug>', LikePost, name="like-post"),
+    path('all-bookmarked-posts/', BookmarkedPostsView.as_view(), name="bookmarked-posts"),
+    path('my-posts/', MyPostsView.as_view(),name="my-posts"),
 ]

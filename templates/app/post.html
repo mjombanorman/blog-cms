@@ -87,11 +87,36 @@
               <div class="social-share">
                 <div class="reactions">
                   <div class="likes">
-                    <i class="uil uil-heart"></i> <span>200</span>
+                    {% if user.is_authenticated %}
+                    <form action="{% url "like-post" post.slug %}" method="POST">
+                      {% csrf_token %}
+                      {% if is_liked %}
+                                 <button type="submit">
+                            <i class="fa fa-solid fa-heart"></i> <span>{{like_count}}</span>
+                      </button>
+
+                      {% else %}
+
+                                         <button type="submit">
+                            <i class="uil uil-heart"></i> <span>{{like_count}}</span>
+                      </button>
+
+                      
+                      {% endif %}
+           
+                
+                    </form>
+                    {% else %}
+   <a class="track" href={% url "login" %}>
+                  <i class="uil uil-heart"></i>
+                  <p class="bookmark">{{like_count}}</p>
+                               </a>
+
+                    {% endif %}
                   </div>
                   <div class="total-comments">
                     <i class="uil uil-comment-alt"></i>
-                    <span>10</span>
+                    <span>{{ comments |length }}</span>
                   </div>
                 </div>
                 <div class="share">
@@ -360,48 +385,6 @@
   </div>
 </div>
 
-<div class="author">
-  <div class="profile-pic">
-    <img src="{% static 'images/author.svg' %}" alt="" />
-  </div>
-  <div class="details">
-    <p>Author name</p>
-    <small>June 20, 2022</small>
-  </div>
-</div>
-<div class="comment-sec-main">
-  <div class="comment-sec">
-    <div class="comment">
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora magnam
-        minima harum, dignissimos ipsa vero sequi ipsam, distinctio quisquam quo
-        cupiditate sed recusandae expedita quod iste maiores rerum. Eaque,
-        dignissimos.
-      </p>
-    </div>
-    <div class="reply">
-      <button onclick="toggleDiv(this)">Reply</button>
-    </div>
-  </div>
-
-  <div class="comment-box" id="comment-reply-box">
-    <h3>Reply to post</h3>
-    <p>
-      Your email address will not be published. Required fields are marked<span
-        >*</span
-      >
-    </p>
-    <form method="POST">
-      <textarea
-        name="content"
-        cols="40"
-        rows="10"
-        placeholder="Type your comment...."
-        required
-        id="id_content">
-      </textarea>
-    </form>
-  </div>
 
   {% endblock %}
 </div>

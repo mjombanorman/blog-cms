@@ -1,0 +1,123 @@
+
+{% extends "base.html" %} 
+{% load static  %}
+{% block title %} Posts {% endblock %}
+{% block content %}
+
+<div class="container">
+  <center>
+    <div class="search-bar">
+      <input type="text" placeholder="Search" />
+      <a href="{% url 'search' %}" class="animated-search" onclick="searchbar()">
+        <i class="uil uil-search"></i>
+      </a>
+    </div>
+    <div class="typo">
+      <h1 class="title">
+        {% if meta.title %}
+        {{ meta.title}}
+        {% else %}
+        Blog
+        {% endif %}
+        </h1>
+      <p>
+               {% if meta.description %}
+                   {{meta.description}}
+        {% else %}
+        Let the ideas flow with your writing.
+        {% endif %}
+   
+      </p>
+    </div>
+    <div class="newsletter">
+      {% if request.session.subscribed == None %}
+            <form method="POST">
+      {% csrf_token %}
+      {{form}}
+        <button class="btn btn-primary">Subscribe</button>
+     {% if messages %}
+           {% for message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+
+{% endif %}
+      </form>
+      {% endif %}
+
+    </div>
+  </center>
+</div>
+{% comment %} {% if featured_post %}
+<section class="sp">
+  <div class="container">
+    <a href='{% url "post-detail" featured_post.slug %}'>
+    <div class="grid-2">
+      <div class="post-img">
+        <img src="{% static 'images/post.png' %}" alt="" />
+      </div>
+      <div class="post-content">
+        <div class="cetagory">
+          <p>Category name</p>
+        </div>
+        <h1>
+          {{featured_post.title}}
+        </h1>
+        <p class="des">
+         {{featured_post.content}}
+        </p>
+        <a class="learn" href="#"
+          >Learn more <span class="material-icons"> trending_flat </span></a
+        >
+      </div>
+    </div>
+  </a>
+  </div>
+</section>
+
+{% endif %} {% endcomment %}
+
+<section class="sp">
+  <div class="container">
+    <h1 class="sec-title">Bookmared Posts</h1>
+    <div class="grid-3">
+      {% for post in bookmarked_posts %}
+      <!-- card -->
+      <a href="{% url "post-detail" post.slug %}">
+        <div class="card">
+          <div class="post-img">
+            {% if post.image %}
+            <img src="{{post.image.url}}" alt="" />
+             {% else %}
+                       <img src="{% static 'images/default.jpg'%}" class="img-fluid" />
+            {% endif %}
+            <div class="tag">{% if post.tags.all|length == 0 %} Untagged {% else %} {{post.tags.all.0.name}}{% endif %}</div>
+          </div>
+          <div class="card-content">
+            <h3>{{post.title}}</h3>
+            <div class="author">
+              <div class="profile-pic">
+                <img src="{% static 'images/author.svg' %}" alt="" />
+              </div>
+              <div class="details">
+              <p>{{post.author.first_name }} {{post.author.last_name }}</p>
+                <small>{{post.last_update}}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
+      <!-- card end-->
+      {% endfor %}
+    </div>
+    <center>
+      <a href=""
+        ><button class="btn btn-primary rounded view">
+          View more <span class="material-icons"> trending_flat </span>
+        </button></a
+      >
+    </center>
+  </div>
+</section>
+
+
+{% endblock content%}
