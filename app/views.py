@@ -209,15 +209,24 @@ def LikePost(request, slug):
 
 
 
-class BookmarkedPostsView(ListView):
+class MyBookmarksView(ListView):
     model = Post
     context_object_name = 'bookmarked_posts'
-    template_name = 'app/all_bookmarked_posts.html'
-  
-    
+    template_name = 'app/my_bookmarks.html'
+      
     def get_queryset(self) -> QuerySet[Any]:
         return Post.objects.filter(bookmarks=self.request.user.id)
     
+    
+class MyLikesView(ListView):
+    model = Post
+    context_object_name = 'liked_posts'
+    template_name = 'app/my_likes.html'
+
+    def get_queryset(self) -> QuerySet[Any]:
+        return Post.objects.filter(likes=self.request.user.id)
+
+
    
 class MyPostsView(ListView):
     model = Post
