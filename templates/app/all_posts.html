@@ -30,7 +30,8 @@
       </p>
     </div>
     <div class="newsletter">
-      <form method="POST">
+      {% if request.session.subscribed == None %}
+            <form method="POST">
       {% csrf_token %}
       {{form}}
         <button class="btn btn-primary">Subscribe</button>
@@ -41,6 +42,8 @@
 
 {% endif %}
       </form>
+      {% endif %}
+
     </div>
   </center>
 </div>

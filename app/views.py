@@ -28,6 +28,7 @@ class PostListView(ListView):
 
     def post(self, request, *args, **kwargs):
         form = SubscribeForm(request.POST)
+        request.session['subscribed'] = True
         if form.is_valid():
             form.save()
             messages.success(request, 'Subscribed successfully!')
@@ -35,8 +36,7 @@ class PostListView(ListView):
             messages.error(request, 'Subscription failed. Please try again.')
         return redirect('posts')
 
-        # If form is invalid or other scenario, handle it accordingly
-        return super().post(request, *args, **kwargs)
+        
 
 # Displaying a single blog post
 class PostDetailView(DetailView):
@@ -127,14 +127,6 @@ class AuthorDetailView(DetailView):
     model = Profile
     template_name = "app/author.html"
     context_object_name = 'author'
-
-    # get the post based on the slug
-
-    # def get_object(self, queryset=None):
-    #     # allow updating of view count in returned post
-    #     author = get_object_or_404(Profile, author=self.kwargs['slug'])
-    #     posts = get_object_or_404(Post, author=author.user)
-    #     return posts
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
